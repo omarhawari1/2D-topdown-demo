@@ -12,6 +12,7 @@ public class PlayerScript : NetworkBehaviour
     private Rigidbody2D rb = null;
     private bool hasGun = false;
     private float ammo = 10;
+    private bool ammoAdded = false;
 
     private void Start() 
     {
@@ -80,7 +81,12 @@ public class PlayerScript : NetworkBehaviour
         }
         if(other.collider.tag == "ammoBox")
         {
-            ammo += bulletsInAmmoBox;
+            if(ammoAdded == false)
+            {
+                ammo += bulletsInAmmoBox;
+                ammoAdded = true;
+            }
+            Destroy(other.collider.gameObject);
         }
     }
 }
