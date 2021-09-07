@@ -7,17 +7,18 @@ public class PlayerScript : NetworkBehaviour
     [SerializeField]private GameObject bulletPrefab = null;
     [SerializeField]private GameObject firePoint = null;
     [SerializeField]private float bulletsInAmmoBox = 5;
+    [SerializeField]private float bulletsOnStart;
 
 
     private Rigidbody2D rb = null;
     private bool hasGun = false;
-    private float ammo = 10;
-    private bool ammoAdded = false;
+    private float ammo;
 
     private void Start() 
     {
         if(!isLocalPlayer){return;}
         rb = GetComponent<Rigidbody2D>();
+        ammo = bulletsOnStart;
     }
 
     private void FixedUpdate() 
@@ -56,6 +57,7 @@ public class PlayerScript : NetworkBehaviour
     {
         if(hasGun && ammo > 0)
         {
+            ammo--;
             CmdSpawnBullet();
         }
     }
@@ -65,6 +67,16 @@ public class PlayerScript : NetworkBehaviour
     {
         GameObject bulletInstance = Instantiate(bulletPrefab, firePoint.transform.position, firePoint.transform.rotation);
         NetworkServer.Spawn(bulletInstance, connectionToClient);
+    }
+    [Command]
+    public void CmdDestroyAmmoBox(GameObject ammoBox)
+    {
+        NetworkServer.Destroy(ammoBox);
+    }
+    public void AmmoPickUp()
+    {
+        ammo += bulletsInAmmoBox;
+        Debug.Log(ammo);
     }
 
     public void gunPickedUp(GameObject gun)
@@ -78,15 +90,6 @@ public class PlayerScript : NetworkBehaviour
         if(other.collider.tag == "Enemy")
         {
             Destroy(gameObject);
-        }
-        if(other.collider.tag == "ammoBox")
-        {
-            if(ammoAdded == false)
-            {
-                ammo += bulletsInAmmoBox;
-                ammoAdded = true;
-            }
-            Destroy(other.collider.gameObject);
         }
     }
 }
