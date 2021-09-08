@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using TMPro;
 
 public class PlayerScript : NetworkBehaviour
 {
@@ -8,6 +9,7 @@ public class PlayerScript : NetworkBehaviour
     [SerializeField]private GameObject firePoint = null;
     [SerializeField]private float bulletsInAmmoBox = 5;
     [SerializeField]private float bulletsOnStart;
+    [SerializeField]private TMP_Text ammoText;
 
 
     private Rigidbody2D rb = null;
@@ -28,6 +30,7 @@ public class PlayerScript : NetworkBehaviour
     }
     private void Update() 
     {
+        ammoText.text = ammo.ToString();
         if(!isLocalPlayer){return;}
         if(Input.GetButtonDown("Fire1"))
         {
